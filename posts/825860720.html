@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="苏禾">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/posts/825860720.html"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="Nginx+PHP环境搭建👻👻👻1.安装PHP依赖包：  1yum -y install libxml2-devel openssl-devel curl-devel libjpeg-devel libpng-devel freetype-devel  2.安装libmcrypt依赖  12yum -y install epel-releaseyum -y install libmcrypt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx实验四">
+<meta property="og:url" content="http://example.com/posts/825860720.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Nginx+PHP环境搭建👻👻👻1.安装PHP依赖包：  1yum -y install libxml2-devel openssl-devel curl-devel libjpeg-devel libpng-devel freetype-devel  2.安装libmcrypt依赖  12yum -y install epel-releaseyum -y install libmcrypt">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-10-11T13:55:59.000Z">
+<meta property="article:modified_time" content="2023-10-12T15:56:48.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="nginx">
+<meta name="twitter:card" content="summary">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/avatar.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            nginx实验四 -
+        
+        苏禾的博客
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+        <style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    
+<script src="/js/libs/anime.min.js"></script>
+
+    <h1 class="ml13">
+        苏禾的博客
+    </h1>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+
+        anime.timeline({loop: true})
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [100,0],
+                translateZ: 0,
+                opacity: [0,1],
+                easing: "easeOutExpo",
+                duration: 1400,
+                delay: (el, i) => 300 + 30 * i
+            }).add({
+            targets: '.ml13 .letter',
+            translateY: [0,-100],
+            opacity: [1,0],
+            easing: "easeInExpo",
+            duration: 1200,
+            delay: (el, i) => 100 + 30 * i
+        });
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            hidePreloaderAfterTimeout(1000); // Hide after 1000 milliseconds once the window has loaded
+        });
+
+        // Backup failsafe: Hide preloader after a maximum of 5000 milliseconds, regardless of the window load event
+        hidePreloaderAfterTimeout(5000);
+
+        function hidePreloaderAfterTimeout(delay) {
+            setTimeout(function () {
+                var preloader = document.querySelector('.preloader');
+                preloader.style.opacity = '0';
+                setTimeout(function () {
+                    preloader.style.display = 'none';
+                }, 200);
+            }, delay);
+        }
+    </script>
+</div>
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left","headings_top_spacing":{"h1":"5rem","h2":"4rem","h3":"2.8rem","h4":"2.5rem","h5":"2.2rem","h6":"2rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":["码农","程序员","工程师"]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":5,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc"},"lazyload":true,"recommendation":{"enable":true,"title":"推荐读一读～","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":true},"scroll_progress":{"bar":true,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/background.jpeg","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"愿我们的代码永无BUG,我亦无他，唯手熟尔！！！","subtitle":{"text":["Loading..."],"hitokoto":{"enable":true,"api":"https://v1.hitokoto.cn/?c=j&c=k&encode=text&min_length=10"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.6rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/XP-WW","instagram":null,"zhihu":null,"twitter":null,"email":"xp0920ww@163.com"},"qrs":{"weixin":"http://47.108.55.10:9000/suhe/wx.png","qq":"http://47.108.55.10:9000/suhe/qq.jpg"}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":true,"type":"fixed","audios":[{"name":"晴天","artist":"周杰伦","url":"http://www.kumeiwp.com/sub/filestores/2024/01/11/6603cbe2a052fdc869593e3f68eeddd4.mp3","cover":"http://p1.music.126.net/ZGffiDQZrGj5s_hnR1CNbg==/109951165566379710.jpg?param=130y130","lrc":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.6.1","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Tags":{"icon":"fa-solid fa-tags","path":"/tags/"},"Categories":{"icon":"fa-solid fa-folder","path":"/categories/"},"Friends":{"icon":"fa-solid fa-link","path":"/links/"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about","Gitee":"https://gitee.com/xp_ww","LeetCode":"https://leetcode.cn/u/optimistic-kalam9aa/"}}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":3,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":"找工作中...","show_on_mobile":true,"links":{"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Tags":{"path":"/tags","icon":"fa-regular fa-tags"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"相册":{"icon":"fa-solid fa-image","path":"/masonry/"}}},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2023/9/27 12:00:00"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":true};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+<!--        <span class="swup-progress-icon">-->
+<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+<!--        </span>-->
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container px-6 md:px-12">
+
+    <div class="navbar-content ">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/avatar.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                苏禾的博客
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    归档
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/tags/"
+                                        >
+                                    <i class="fa-solid fa-tags fa-fw"></i>
+                                    标签
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/categories/"
+                                        >
+                                    <i class="fa-solid fa-folder fa-fw"></i>
+                                    分类
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/links/"
+                                        >
+                                    <i class="fa-solid fa-link fa-fw"></i>
+                                    友情链接
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown"
+                                   href="#"
+                                        onClick=&#34;return false;&#34;>
+                                    <i class="fa-regular fa-user fa-fw"></i>
+                                    关于
+                                    <i class="fa-solid fa-chevron-down fa-fw"></i>
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                        
+                                            <li>
+                                                <a href="/about">
+                                                    ME
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a target="_blank" rel="noopener" href="https://gitee.com/xp_ww">
+                                                    GITEE
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a target="_blank" rel="noopener" href="https://leetcode.cn/u/optimistic-kalam9aa/">
+                                                    LEETCODE
+                                                </a>
+                                            </li>
+                                        
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-screen w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                归档
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/tags/"
+                        >
+                            <span>
+                                标签
+                            </span>
+                            
+                                <i class="fa-solid fa-tags fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/categories/"
+                        >
+                            <span>
+                                分类
+                            </span>
+                            
+                                <i class="fa-solid fa-folder fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/links/"
+                        >
+                            <span>
+                                友情链接
+                            </span>
+                            
+                                <i class="fa-solid fa-link fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item-sub text-base my-1.5 flex flex-col w-full">
+                        
+                        <div class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary cursor-pointer text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                             navbar-data-toggle="submenu-About"
+                        >
+                            <span>
+                                关于
+                            </span>
+                            
+                                <i class="fa-solid fa-chevron-right fa-sm fa-fw transition-all"></i>
+                            
+                        </div>
+                        
+
+                        
+                            <div class="flex-col items-start px-2 py-2 hidden" data-target="submenu-About">
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/about">ME</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           target="_blank" rel="noopener" href="https://gitee.com/xp_ww">GITEE</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           target="_blank" rel="noopener" href="https://leetcode.cn/u/optimistic-kalam9aa/">LEETCODE</a>
+                                    </div>
+                                
+                            </div>
+                        
+                    </li>
+            
+
+            
+            
+                
+                    
+                    
+                    
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/masonry/"
+                        >
+                            <span>相册</span>
+                            <i class="fa-solid fa-image fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">17</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">20</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container flex relative justify-between box-border w-full h-full">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color text-4xl md:text-6xl font-bold px-2 sm:px-6 md:px-8 py-3">nginx实验四</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/avatar.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">苏禾</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">工程师</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-10-11 21:55:59</span>
+        <span class="mobile">2023-10-11 21:55:59</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2023-10-12 23:56:48</span>
+            <span class="mobile">2023-10-12 23:56:48</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/nginx/">nginx</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/nginx/">nginx</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>1.8k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>8 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <h3 id="Nginx-PHP环境搭建👻👻👻"><a href="#Nginx-PHP环境搭建👻👻👻" class="headerlink" title="Nginx+PHP环境搭建👻👻👻"></a>Nginx+PHP环境搭建👻👻👻</h3><p class="note note-secondary">1.安装PHP依赖包：</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install libxml2-devel openssl-devel curl-devel libjpeg-devel libpng-devel freetype-devel</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">2.安装libmcrypt依赖</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum -y install epel-release</span><br><span class="line">yum -y install libmcrypt-devel</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">3.http://php.net 下载php-5.6.27.tar.gz</p>
+
+<p class="note note-secondary">4.用命令解压缩，进入php-5.6.27目录</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">用该命令解压缩</span></span><br><span class="line">tar -zxvf php-5.6.27.tar.gz</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">进入php-5.6.27目录</span></span><br><span class="line">cd php-5.6.27</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">5.用./configure *命令生成makefile，可用./configure --help查看帮助</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/usr/local/php --enable-fpm --with-zlib --enable-zip --enable-mbstring --with-mcrypt --with-mysql --with-mysqli --with-pdo-mysql --with-gd --with-jpeg-dir --with-png-dir --with-freetype-dir --with-curl --with-openssl --with-mhash --enable-bcmath --enable-opcache</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">看见下面就代表成功</span></span><br><span class="line">Thank you for using PHP.</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">6.执行命令编译并安装php</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">7.编写PHP页面，存为index.php</p>
+
+<div class="highlight-container" data-rel="Php"><figure class="iseeu highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;Hello World!\n&quot;</span>;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;Xu Pan\n&quot;</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">8.通过如下命令测试</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/php/bin/php index.php</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">见到如下例子就表示运行成功</span></span><br><span class="line">Hello World!</span><br><span class="line">Xu Pan</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">9.复制PHP-FPM的配置文件</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/php/etc</span><br><span class="line">cp php-fpm.conf.default php-fpm.conf</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">10.启动PHP-FPM</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">进入root目录下php-5.6.27目录</span></span><br><span class="line">cd ~/php-5.6.27</span><br><span class="line">cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">给/etc/init.d/php-fpm加入可执行权限</span></span><br><span class="line">chmod +x /etc/init.d/php-fpm</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">添加系统服务</span></span><br><span class="line">chkconfig --add php-fpm</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">11.用命令重新启动PHP-FPM，才可以使配置生效。</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">service php-fpm restart</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">下面两行结果</span></span><br><span class="line">Gracefully shutting down php-fpm . done</span><br><span class="line">Starting php-fpm  done</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">12.复制php.ini</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp php.ini-development /usr/local/php/lib/php.ini</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">13、14.安装Nginx</p>
+
+<blockquote>
+<p>nginx编译安装在其他文章已经给出</p>
+</blockquote>
+<p><a class="link"   target="_blank" rel="noopener" href="https://xp_ww.gitee.io/blog/347607591.html" >nginx编译安装 - XP_WW (gitee.io) <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p class="note note-secondary">15.编辑nginx配置文件文件，添加如下配置项：</p>
+
+<p><code>vi /usr/local/nginx/conf/nginx.conf</code></p>
+<div class="highlight-container" data-rel="Nginx"><figure class="iseeu highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span>  localhost;</span><br><span class="line">    <span class="section">location</span> / &#123;</span><br><span class="line">        <span class="attribute">root</span>   html;</span><br><span class="line">        <span class="attribute">index</span>  index.php;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="section">location</span> <span class="regexp">~ \.php$</span> &#123;</span><br><span class="line">        <span class="attribute">root</span>           html;</span><br><span class="line">        <span class="attribute">fastcgi_pass</span>   <span class="number">127.0.0.1:9000</span>;</span><br><span class="line">        <span class="attribute">fastcgi_index</span>  index.php;</span><br><span class="line">        <span class="attribute">fastcgi_param</span>  SCRIPT_FILENAME  /scripts<span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">        <span class="attribute">include</span>        fastcgi.conf;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">16.重载nginx配置文件</p>
+
+<p><span class="note note-danger">注意如果安装nginx时是编译安装并且创建了服务脚本可以使用下面方法重载nginx配置文件</span></p>
+<p><code>systemctl restart nginx</code></p>
+<p><span class="note note-danger">否则</span></p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/nginx/sbin/nginx -s #平滑启动nginx</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">或者</span></span><br><span class="line">/usr/local/nginx/sbin/nginx #直接启动</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">17.将步骤（7）的测试页面复制到nginx的html目录</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp ~/index.php /usr/local/nginx/html/index.php</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">18.若未开放80端口，请用如下命令开放80端口</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">开放端口</span></span><br><span class="line">firewall-cmd --zone=public --add-port=80/tcp --permanent</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">重启防火墙</span></span><br><span class="line">systemctl restart firewalld</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-secondary">19.浏览器中输入http://192.168.*.*/index.php（虚拟机IP），若看到步骤（7）中的相关信息，恭喜你成功了</p>
+
+<p>🔥🔥🔥🔥🔥</p>
+<h3 id="Nginx-Apache-PHP动静分离🤡🤡🤡"><a href="#Nginx-Apache-PHP动静分离🤡🤡🤡" class="headerlink" title="Nginx+Apache+PHP动静分离🤡🤡🤡"></a><em><strong>Nginx+Apache+PHP动静分离</strong></em>🤡🤡🤡</h3><p class="note note-success">1.下载apache</p>
+
+<p><code>wget https://downloads.apache.org/httpd/httpd-2.4.57.tar.gz</code></p>
+<p class="note note-success">2.用命令解压缩httpd-2.4.57.tar.gz</p>
+
+<p><code>tar -zxvf httpd-2.4.57.tar.gz</code></p>
+<p class="note note-success">3.下载APR and APR-Util</p>
+
+<p><code>wget https://dlcdn.apache.org/apr/apr-1.7.4.tar.gz</code></p>
+<p><code>wget https://dlcdn.apache.org//apr/apr-util-1.6.3.tar.gz</code></p>
+<p class="note note-success">4.用命令解压APR and APR-Util</p>
+
+<p><code>tar -zxvf apr-1.7.4.tar.gz </code></p>
+<p><code>tar -zxvf apr-util-1.6.3.tar.gz</code></p>
+<p class="note note-success">5.用mv命令将arp-1.7.4移到 httpd-2.4.57/srclib/apr</p>
+
+<p><code>mv apr-1.7.4 httpd-2.4.57/srclib/apr</code></p>
+<p class="note note-success">6.用mv命令将apr-util-1.6.3移到 httpd-2.4.57/srclib/apr-util</p>
+
+<p><code>mv apr-util-1.6.3 httpd-2.4.57/srclib/apr-util</code></p>
+<p class="note note-success">7.安装apache依赖</p>
+
+<p><code>yum -y install pcre-devel openssl-devel expat-devel</code></p>
+<p class="note note-success">8.生成apache的makefile</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">进入httpd-2.4.57目录</span></span><br><span class="line">cd httpd-2.4.57</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">生成makefile</span></span><br><span class="line">./configure --enable-so --enable-deflate --enable-ssl</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-success">9.编译安装apache</p>
+
+<p><code>make &amp;&amp; make install</code></p>
+<p class="note note-success">10.建立脚本</p>
+
+<p><code>vi /etc/init.d/httpd</code></p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">! /bin/bash</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">chkconfig: 35 85 15</span></span><br><span class="line">/usr/local/apache2/bin/apachectl $1</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-success">11.采用命令为步骤（10）建立的脚本添加执行权限</p>
+
+<p><code>chmod +x /etc/init.d/httpd </code></p>
+<p class="note note-success">12.采用命令启动apache</p>
+
+<p><code>service httpd start</code></p>
+<p><span class="note note-danger">注意：<span></p>
+<p>你可能会遇到以下警告：</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AH00558: httpd: Could not reliably determine the server&#x27;s fully qualified domain name, using fe80::987b:1cbe:6f72:2bdb%ens33. Set the &#x27;ServerName&#x27; directive globally to suppress this message</span><br></pre></td></tr></table></figure></div>
+
+<p>这个并不影响结果，可以继续往下，如果你想解决，参考下面步骤：</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vi /usr/local/apache2/conf/httpd.conf</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">然后把</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">ServerName www.example.com:80 改为：ServerName localhost</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">最后重启apache</span></span><br><span class="line">service httpd restart</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-success">13.若未开放80端口，请开放80端口</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">开放端口</span></span><br><span class="line">firewall-cmd --zone=public --add-port=80/tcp --permanent</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">重启防火墙</span></span><br><span class="line">systemctl restart firewalld</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-success">14.访问测试apache</p>
+
+<p><code>浏览器输入192.168.*.*（虚拟机IP）</code></p>
+<p>当你看到<code>It works!</code>,恭喜你启动成功🐇🐇🐇</p>
+<p class="note note-success">15.找到apache配置文件，取消如下行的注释：</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vi /usr/local/apache2/conf/httpd.conf</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Include conf/extra/httpd-vhosts.conf</span></span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-success">16.配置虚拟主机</p>
+
+<p><code>vi /usr/local/apache2/conf/extra/httpd-vhosts.conf 注释掉默认配置，加入下面内容</code></p>
+<div class="highlight-container" data-rel="Xml"><figure class="iseeu highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">VirtualHost</span> *<span class="attr">:80</span>&gt;</span></span><br><span class="line">    DocumentRoot &quot;/usr/local/apache2/htdocs/www.test.com&quot;</span><br><span class="line">    ServerName www.test.com</span><br><span class="line">    ServerAlias test.com</span><br><span class="line"><span class="tag">&lt;/<span class="name">VirtualHost</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-success">17.在httpd.conf中添加apache对php的支持</p>
+
+<p><code>vi /usr/local/apache2/conf/httpd.conf</code></p>
+<p><code>加入下面内容</code></p>
+<div class="highlight-container" data-rel="Xml"><figure class="iseeu highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">FilesMatch</span> &quot;\<span class="attr">.php</span>$&quot;&gt;</span></span><br><span class="line">	setHandler application/x-httpd-php</span><br><span class="line"><span class="tag">&lt;/<span class="name">FilesMatch</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-success">18.修改apache的主配置文件，修改如下配置</p>
+
+<p><code>vi /usr/local/apache2/conf/httpd.conf</code></p>
+<p><code>查找并修改下面内容</code></p>
+<div class="highlight-container" data-rel="Xml"><figure class="iseeu highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">IfModule</span> <span class="attr">dir_module</span>&gt;</span></span><br><span class="line">    DirectoryIndex index.html index.php</span><br><span class="line"><span class="tag">&lt;/<span class="name">IfModule</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-success">19.打开apxs文件</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vi /usr/local/apache2/bin/apxs</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">将第一行</span></span><br><span class="line">!/replace/with/path/to/perl/interpreter -w</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">替换为perl的具体路径，比如：<span class="comment">#!/usr/bin/perl</span></span></span><br><span class="line">whereis perl #查看perl的具体路径</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-warning">20.编译安装php</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">前面和上文一样</span></span><br><span class="line">./configure --prefix=/usr/local/php --with-apxs2=/usr/local/apache2/bin/apxs --with-zlib --enable-zip --enable-mbstring --with-mcrypt --with-mysql --with-mysqli --with-pdo-mysql --with-gd --with-jpeg-dir --with-png-dir --with-freetype-dir --with-curl --with-openssl --with-mhash --with-bcmath --enable-opcache</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">看见下面就代表成功</span></span><br><span class="line">Thank you for using PHP.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">最后别忘了</span></span><br><span class="line">make &amp;&amp; make install</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">若初次安装PHP,还需要将php.ini复制到php的lib目录中</span></span><br><span class="line">cd ~/php-5.6.27</span><br><span class="line">cp php.ini-development /usr/local/php/lib/php.ini</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-success">21.用命令重新启动apache服务器</p>
+
+<p><code>service httpd start</code></p>
+<p class="note note-success">22.利用echo命令创建一个简单的index.php页面，保存至apache的htdocs的www.test.com目录下。</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo -e &quot;&lt;?php\nphpinfo();\n?&gt;&quot; &gt; /usr/local/apache2/htdocs/www.test.com/index.php</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-success">23.打开浏览器，输入http://IP/index.php，如果成功看到PHP信息，表示成功搭建apache+PHP环境。</p>
+
+<p class="note note-success">24.将apache的监听端口改为81，修改httpd.conf和httpd-vhosts.conf</p>
+
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">1.修改httpd.conf</span></span><br><span class="line">vi /usr/local/apache2/conf/httpd.conf</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">找到Listen，并修改</span></span><br><span class="line">Listen 80 ==&gt; Listen 81</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">2.修改httpd-vhosts.conf</span></span><br><span class="line">vi /usr/local/apache2/conf/extra/httpd-vhosts.conf</span><br><span class="line">&lt;VirtualHost *:80&gt;  ==&gt;  &lt;VirtualHost *:81&gt;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">记得开放端口哦</span></span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-success">25.用命令重新启动apache服务器</p>
+
+<p><code>service httpd restart</code></p>
+<p class="note note-success">26.编译安装nginx1.10.3</p>
+
+<blockquote>
+<p>nginx编译安装在其他文章已经给出</p>
+</blockquote>
+<p><a class="link"   target="_blank" rel="noopener" href="https://xp_ww.gitee.io/blog/347607591.html" >nginx编译安装 - XP_WW (gitee.io) <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p class="note note-success">27.修改nginx.conf，注释原来的server块，添加如下虚拟主机</p>
+
+<div class="highlight-container" data-rel="Nginx"><figure class="iseeu highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">	<span class="attribute">listen</span>     <span class="number">80</span>;</span><br><span class="line">	<span class="attribute">server_name</span>  www.test.com;</span><br><span class="line">	<span class="attribute">root</span> /usr/local/apache2/htdocs/www.test.com;</span><br><span class="line">	<span class="section">location</span> <span class="regexp">~ \.php$</span> &#123;</span><br><span class="line">		<span class="attribute">proxy_pass</span>   http://127.0.0.1:81;</span><br><span class="line">		<span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-success">28.重新启动Nginx</p>
+
+<p><code>./nginx -s reload</code></p>
+<p class="note note-success">29.在/usr/local/apache2/htdocs/www.test.com新建立一个页面index.html，内容如下：</p>
+
+<div class="highlight-container" data-rel="Html"><figure class="iseeu highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>welcome to www.test.com<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>This is page created by xupan!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p class="note note-success">30.打开浏览器，再次测试，如看到（29）内容，那么</p>
+
+<p>🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> nginx实验四</li>
+        <li><strong>作者:</strong> 苏禾</li>
+        <li><strong>创建于
+                :</strong> 2023-10-11 21:55:59</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2023-10-12 23:56:48
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://xupan.fun/posts/825860720.html
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/nginx/">#nginx</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+  <div class="recommended-article px-2 sm:px-6 md:px-8">
+   <div class="recommended-desktop">
+    <div class="recommended-article-header text-xl md:text-3xl font-bold mt-10">
+     <i aria-hidden="true"></i><span>推荐读一读～</span>
+    </div>
+    <div class="recommended-article-group"><a class="recommended-article-item" href="/posts/3016513403.html" title="nginx实验四挑战题" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="nginx实验四挑战题" class="!max-w-none">
+  <span class="title">nginx实验四挑战题</span>
+</a><a class="recommended-article-item" href="/posts/347607591.html" title="nginx编译安装" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="nginx编译安装" class="!max-w-none">
+  <span class="title">nginx编译安装</span>
+</a><a class="recommended-article-item" href="/posts/717359158.html" title="nginx实验六" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="nginx实验六" class="!max-w-none">
+  <span class="title">nginx实验六</span>
+</a></div>
+   </div>
+   <div class="recommended-mobile">
+   <div class="recommended-article-header text-xl md:text-3xl font-bold mt-10">
+     <i aria-hidden="true"></i><span>推荐读一读～</span>
+   </div>
+   <div class="recommended-article-group"><a class="recommended-article-item" href="/posts/3016513403.html" title="nginx实验四挑战题" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="nginx实验四挑战题" class="!max-w-none">
+  <span class="title">nginx实验四挑战题</span>
+</a><a class="recommended-article-item" href="/posts/347607591.html" title="nginx编译安装" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="nginx编译安装" class="!max-w-none">
+  <span class="title">nginx编译安装</span>
+</a></div>
+   </div>
+  </div>
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                    <div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="prev"
+                        rel="prev"
+                        href="/posts/3016513403.html"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">nginx实验四挑战题</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/posts/2112605806.html"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">nginx实验三</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div id="waline"></div>
+    <script type="module" data-swup-reload-script>
+      import { init } from '/js/libs/waline.mjs';
+
+      function loadWaline() {
+        init({
+          el: '#waline',
+          serverURL: 'https://waline-fw10oxrr0-suhes-projects.vercel.app/',
+          lang: 'zh-CN',
+          dark: 'body[class~="dark-mode"]',
+          requiredMeta: ['nick', 'mail'],
+          emoji: ['https://unpkg.com/@waline/emojis@1.2.0/qq','https://unpkg.com/@waline/emojis@1.2.0/bilibili'],
+          recaptchaV3Key: "wasd",
+          
+        });
+      }
+
+      if (typeof swup !== 'undefined') {
+        loadWaline();
+      } else {
+        window.addEventListener('DOMContentLoaded', loadWaline);
+      }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">nginx实验四</div>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx-PHP%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%F0%9F%91%BB%F0%9F%91%BB%F0%9F%91%BB"><span class="nav-text">Nginx+PHP环境搭建👻👻👻</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx-Apache-PHP%E5%8A%A8%E9%9D%99%E5%88%86%E7%A6%BB%F0%9F%A4%A1%F0%9F%A4%A1%F0%9F%A4%A1"><span class="nav-text">Nginx+Apache+PHP动静分离🤡🤡🤡</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+            <div class="customize-info my-1">我有一个小猪肘子🐖</div>
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2023</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">苏禾</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        共 20 篇文章
+                    </span>
+                    
+                        <span>
+                            共 39.8k 字
+                        </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.6.1</a></span>
+        </div>
+        
+            <div class="icp-info my-1"><a target="_blank" rel="nofollow" href="
+                
+                https://beian.miit.gov.cn
+                
+                ">蜀ICP备2023027194号</a></div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+    
+<script src="/js/libs/minimasonry.min.js"></script>
+
+    
+<script src="/js/plugins/masonry.js" type="module"></script>
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+    <div id="aplayer"></div>
+
+<script src="/js/libs/APlayer.min.js"></script>
+
+
+<script src="/js/plugins/aplayer.js"></script>
+
+
+</body>
+</html>
