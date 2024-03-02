@@ -18,15 +18,15 @@
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="如何在SpringBoot中集成SpringSecurity和Jwt？ Jwt大家应该都比较熟悉，大家写安全框架应该用到最多的就是Jwt了，而SpringSecurity大多数是大项目在用然后最近浅学了一下SpringSecurity,但是网上的教程大多数的集成都是老版本，对于新版本的集成比较少，然后自己也是琢磨了很久，看了下官方文档，，然后现在浅浅记录一下集成过程吧。  前置用户类  12345">
+        <meta name="description" content="Jwt大家应该都比较熟悉，大家写安全框架应该用到最多的就是Jwt了，而SpringSecurity大多数是大项目在用然后最近浅学了一下SpringSecurity,但是网上的教程大多数的集成都是老版本，对于新版本的集成比较少，然后自己也是琢磨了很久，看了下官方文档，，然后现在浅浅记录一下集成过程吧。  前置用户类  12345678910111213141516171819@Data@Equal">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SpringBoot中集成SpringSecurity和Jwt">
 <meta property="og:url" content="http://example.com/posts/619017079.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="如何在SpringBoot中集成SpringSecurity和Jwt？ Jwt大家应该都比较熟悉，大家写安全框架应该用到最多的就是Jwt了，而SpringSecurity大多数是大项目在用然后最近浅学了一下SpringSecurity,但是网上的教程大多数的集成都是老版本，对于新版本的集成比较少，然后自己也是琢磨了很久，看了下官方文档，，然后现在浅浅记录一下集成过程吧。  前置用户类  12345">
+<meta property="og:description" content="Jwt大家应该都比较熟悉，大家写安全框架应该用到最多的就是Jwt了，而SpringSecurity大多数是大项目在用然后最近浅学了一下SpringSecurity,但是网上的教程大多数的集成都是老版本，对于新版本的集成比较少，然后自己也是琢磨了很久，看了下官方文档，，然后现在浅浅记录一下集成过程吧。  前置用户类  12345678910111213141516171819@Data@Equal">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-09-30T12:32:24.000Z">
-<meta property="article:modified_time" content="2023-10-12T02:05:06.000Z">
+<meta property="article:modified_time" content="2024-03-02T06:48:55.579Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="SpringBoot">
 <meta property="article:tag" content="SpringSecurity">
@@ -756,8 +756,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-10-12 10:05:06</span>
-            <span class="mobile">2023-10-12 10:05:06</span>
+            <span class="desktop">2024-03-02 14:48:55</span>
+            <span class="mobile">2024-03-02 14:48:55</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -827,7 +827,7 @@
 
 
         <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
-            <h3 id="如何在SpringBoot中集成SpringSecurity和Jwt？"><a href="#如何在SpringBoot中集成SpringSecurity和Jwt？" class="headerlink" title="如何在SpringBoot中集成SpringSecurity和Jwt？"></a>如何在SpringBoot中集成SpringSecurity和Jwt？</h3><blockquote>
+            <blockquote>
 <p>Jwt大家应该都比较熟悉，大家写安全框架应该用到最多的就是Jwt了，而SpringSecurity大多数是大项目在用然后最近浅学了一下SpringSecurity,但是网上的教程大多数的集成都是老版本，对于新版本的集成比较少，然后自己也是琢磨了很久，看了下官方文档，，然后现在浅浅记录一下集成过程吧。</p>
 </blockquote>
 <p class="note note-primary">前置用户类<p>
@@ -863,7 +863,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-10-12 10:05:06
+                    :</strong> 2024-03-02 14:48:55
             </li>
         
         <li>
@@ -1023,7 +1023,7 @@
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
         <div class="page-title">SpringBoot中集成SpringSecurity和Jwt</div>
-        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%9C%A8SpringBoot%E4%B8%AD%E9%9B%86%E6%88%90SpringSecurity%E5%92%8CJwt%EF%BC%9F"><span class="nav-text">如何在SpringBoot中集成SpringSecurity和Jwt？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80-%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="nav-text">一.引入依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C-Jwt%E5%B7%A5%E5%85%B7%E7%B1%BB"><span class="nav-text">二.Jwt工具类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89-%E6%96%B0%E5%BB%BA%E5%AE%89%E5%85%A8%E7%94%A8%E6%88%B7%E7%B1%BBSecurityUser"><span class="nav-text">三.新建安全用户类SecurityUser</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B-%E5%B0%86%E7%94%A8%E6%88%B7Service%E5%AE%9E%E7%8E%B0%E7%B1%BB%E5%AE%9E%E7%8E%B0UserDetailsService"><span class="nav-text">四.将用户Service实现类实现UserDetailsService</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%94-%E5%AE%9E%E7%8E%B0Jwt%E8%BF%87%E6%BB%A4%E5%99%A8%E7%B1%BB%EF%BC%8C%E7%94%A8%E4%BA%8E%E6%A3%80%E6%9F%A5token"><span class="nav-text">五.实现Jwt过滤器类，用于检查token</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%AD-%E6%96%B0%E5%BB%BASecurity%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="nav-text">六.新建Security配置类</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80-%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="nav-text">一.引入依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C-Jwt%E5%B7%A5%E5%85%B7%E7%B1%BB"><span class="nav-text">二.Jwt工具类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89-%E6%96%B0%E5%BB%BA%E5%AE%89%E5%85%A8%E7%94%A8%E6%88%B7%E7%B1%BBSecurityUser"><span class="nav-text">三.新建安全用户类SecurityUser</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B-%E5%B0%86%E7%94%A8%E6%88%B7Service%E5%AE%9E%E7%8E%B0%E7%B1%BB%E5%AE%9E%E7%8E%B0UserDetailsService"><span class="nav-text">四.将用户Service实现类实现UserDetailsService</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%94-%E5%AE%9E%E7%8E%B0Jwt%E8%BF%87%E6%BB%A4%E5%99%A8%E7%B1%BB%EF%BC%8C%E7%94%A8%E4%BA%8E%E6%A3%80%E6%9F%A5token"><span class="nav-text">五.实现Jwt过滤器类，用于检查token</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%AD-%E6%96%B0%E5%BB%BASecurity%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="nav-text">六.新建Security配置类</span></a></li></ol>
 
     </div>
 </div>
@@ -1062,7 +1062,7 @@
                     </span>
                     
                         <span>
-                            共 39.7k 字
+                            共 39.6k 字
                         </span>
                     
                 </p>
