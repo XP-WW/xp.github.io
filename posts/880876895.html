@@ -727,12 +727,12 @@
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>4.5k 字</span>
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>4.6k 字</span>
         </span>
     
     
         <span class="article-min2read article-meta-item">
-            <i class="fa-regular fa-clock"></i>&nbsp;<span>19 分钟</span>
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>20 分钟</span>
         </span>
     
     
@@ -751,7 +751,7 @@
 
 
         <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
-            <h3 id="455-分发饼干"><a href="#455-分发饼干" class="headerlink" title="455. 分发饼干"></a><a class="link"   target="_blank" rel="noopener" href="https://leetcode.cn/problems/assign-cookies/" >455. 分发饼干 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></h3><blockquote>
+            <div id="readmore-container"><h3 id="455-分发饼干"><a href="#455-分发饼干" class="headerlink" title="455. 分发饼干"></a><a class="link"   target="_blank" rel="noopener" href="https://leetcode.cn/problems/assign-cookies/" >455. 分发饼干 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></h3><blockquote>
 <p>假设你是一位很棒的家长，想要给你的孩子们一些小饼干。但是，每个孩子最多只能给一块饼干。</p>
 <p>对每个孩子 <code>i</code>，都有一个胃口值 <code>g[i]</code>，这是能让孩子们满足胃口的饼干的最小尺寸；并且每块饼干 <code>j</code>，都有一个尺寸 <code>s[j]</code> 。如果 <code>s[j] &gt;= g[i]</code>，我们可以将这个饼干 <code>j</code> 分配给孩子 <code>i</code> ，这个孩子会得到满足。你的目标是尽可能满足越多数量的孩子，并输出这个最大数值。</p>
 <p><strong>示例 1:</strong></p>
@@ -995,7 +995,37 @@
 </ul>
 </blockquote>
 <div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">arrayPairSum</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">sort</span>(nums.<span class="built_in">begin</span>(),nums.<span class="built_in">end</span>());</span><br><span class="line">        <span class="type">int</span> res = <span class="number">0</span>,n = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>;i &lt; n; i+=<span class="number">2</span>) &#123;</span><br><span class="line">            res+=nums[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></div>
-
+</div>
+				<link rel="stylesheet" type="text/css" href="https://qiniu.techgrow.cn/readmore/dist/hexo.css">
+				<script src="https://qiniu.techgrow.cn/readmore/dist/readmore.js" type="text/javascript"></script>
+				<script>
+				var isMobile = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i);
+				var isEncrypt = document.getElementById('hexo-blog-encrypt');
+				var allowMobile = true;
+				if (!isEncrypt && (!isMobile || (isMobile && allowMobile))) {
+					try {
+						var plugin = new ReadmorePlugin();
+						plugin.init({
+							"type": "hexo",
+							"id": "readmore-container",
+							"name": " 码农XP",
+							"blogId": "35111-8663126362625-154",
+							"qrcode": "https://xupan.fun/images/wxe.jpg",
+							"keyword": " 码农XP的博客",
+							"random": "1",
+							"height": "auto",
+							"expires": "5",
+							"lockToc": "yes",
+							"interval": "60",
+							"baseUrl": "",
+							"tocSelector": ""
+						});
+					} catch(e) {
+						console.warn("readmore plugin occurred error: " + e.name + " | " + e.message);
+					}
+				}
+				</script>
+			
         </div>
 
         
@@ -1200,7 +1230,7 @@
                     </span>
                     
                         <span>
-                            共 88.6k 字
+                            共 90.2k 字
                         </span>
                     
                 </p>
